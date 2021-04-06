@@ -55,7 +55,7 @@ resource "aws_security_group" "validator" {
   vpc_id = data.aws_subnet.validator[count.index].vpc_id
 
   # TODO: Needs to be restricted to the specific traffic required to operate
-  ingress {
+  egress {
     from_port = 0
     to_port   = 0
 
@@ -64,7 +64,7 @@ resource "aws_security_group" "validator" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
+  ingress {
     from_port = 0
     to_port   = 0
 
