@@ -7,8 +7,8 @@ resource "aws_eip" "validator" {
 }
 
 resource "aws_eip_association" "validator" {
-  instance_id   = aws_instance.validator[count.index].id
   allocation_id = aws_eip.validator[count.index].id
+  instance_id   = aws_instance.validator[count.index].id
 
   count = var.validator_count
 }
