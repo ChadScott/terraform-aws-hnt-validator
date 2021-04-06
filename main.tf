@@ -26,9 +26,14 @@ resource "aws_instance" "validator" {
   placement_group             = aws_placement_group.validator.id
   key_name                    = aws_key_pair.validator[count.index].key_name
   subnet_id                   = element(var.validator_subnets, count.index)
-  security_groups             = [aws_security_group.validator[count.index].id]
+  user_data                   = data.template_cloudinit_config.validator.rendered
+  vpc_security_group_ids      = [aws_security_group.validator[count.index].id]
 
   tags = merge({
+    Name = "hnt-validator-${random_id.validator.hex}-${count.index}"
+  }, var.validator_tags)
+
+  volume_tags = merge({
     Name = "hnt-validator-${random_id.validator.hex}-${count.index}"
   }, var.validator_tags)
 

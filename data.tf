@@ -19,3 +19,18 @@ data "aws_subnet" "validator" {
 
   count = var.validator_count
 }
+
+data "template_cloudinit_config" "validator" {
+  base64_encode = true
+  gzip          = true
+
+  part {
+    content      = data.template_file.validator_cloud_config.rendered
+    content_type = "text/cloud-config"
+    filename     = "init.cfg"
+  }
+}
+
+data "template_file" "validator_cloud_config" {
+  template = file("${path.module}/templates/cloud-config.tpl")
+}
