@@ -23,8 +23,8 @@ resource "aws_instance" "validator" {
   ami                         = data.aws_ami.ubuntu.id
   associate_public_ip_address = true
   instance_type               = var.validator_instance_type
-  placement_group             = aws_placement_group.validator.id
   key_name                    = aws_key_pair.validator[count.index].key_name
+  placement_group             = aws_placement_group.validator.id
   subnet_id                   = element(var.validator_subnets, count.index)
   user_data                   = data.template_cloudinit_config.validator.rendered
   vpc_security_group_ids      = [aws_security_group.validator[count.index].id]
