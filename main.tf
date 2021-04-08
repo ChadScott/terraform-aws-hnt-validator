@@ -40,7 +40,7 @@ resource "aws_instance" "validator" {
   root_block_device {
     delete_on_termination = true
     encrypted             = true
-    volume_size           = 64
+    volume_size           = var.validator_volume_size
   }
 
   count = var.validator_count

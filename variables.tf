@@ -19,3 +19,8 @@ variable "validator_tags" {
   type    = map(any)
   default = {}
 }
+
+variable "validator_volume_size" {
+  type    = number
+  default = 64
+}
