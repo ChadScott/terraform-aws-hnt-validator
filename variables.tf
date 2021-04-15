@@ -3,6 +3,17 @@ variable "output_keys" {
   default = false
 }
 
+variable "ssh_allowlist" {
+  type = list(string)
+
+  default = []
+}
+
+variable "validator_autorecover" {
+  type    = bool
+  default = true
+}
+
 variable "validator_count" {
   default = 1
 }

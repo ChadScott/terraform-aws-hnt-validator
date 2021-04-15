@@ -20,6 +20,8 @@ data "aws_subnet" "validator" {
   count = var.validator_count
 }
 
+data "aws_region" "current" {}
+
 data "template_cloudinit_config" "validator" {
   base64_encode = true
   gzip          = true

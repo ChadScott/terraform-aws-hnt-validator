@@ -1,7 +1,9 @@
 resource "aws_eip" "validator" {
   vpc = true
 
-  tags = var.validator_tags
+  tags = merge({
+    Name = "hnt-validator-${random_id.validator.hex}-${count.index}"
+  }, var.validator_tags)
 
   count = var.validator_count
 }
@@ -15,6 +17,10 @@ resource "aws_eip_association" "validator" {
 
 resource "aws_key_pair" "validator" {
   public_key = tls_private_key.validator[count.index].public_key_openssh
+
+  tags = merge({
+    Name = "hnt-validator-${random_id.validator.hex}-${count.index}"
+  }, var.validator_tags)
 
   count = var.validator_count
 }
@@ -54,24 +60,51 @@ resource "aws_placement_group" "validator" {
 resource "aws_security_group" "validator" {
   vpc_id = data.aws_subnet.validator[count.index].vpc_id
 
-  # TODO: Needs to be restricted to the specific traffic required to operate
-  egress {
-    from_port = 0
-    to_port   = 0
+  tags = merge({
+    Name = "hnt-validator-${random_id.validator.hex}-${count.index}"
+  }, var.validator_tags)
 
-    protocol = -1
+  count = var.validator_count
+}
 
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_security_group_rule" "validator_all_egress" {
+  security_group_id = aws_security_group.validator[count.index].id
+  type              = "egress"
 
-  ingress {
-    from_port = 0
-    to_port   = 0
+  from_port = 0
+  to_port   = 0
 
-    protocol = -1
+  protocol = -1
 
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  cidr_blocks = ["0.0.0.0/0"]
+
+  count = var.validator_count
+}
+
+resource "aws_security_group_rule" "validator_22_ingress" {
+  security_group_id = aws_security_group.validator[count.index].id
+  type              = "ingress"
+
+  from_port = 22
+  to_port   = 22
+
+  protocol = "tcp"
+
+  cidr_blocks = var.ssh_allowlist
+
+  count = length(var.ssh_allowlist) > 0 ? var.validator_count : 0
+}
+
+resource "aws_security_group_rule" "validator_2154_ingress" {
+  security_group_id = aws_security_group.validator[count.index].id
+  type              = "ingress"
+
+  from_port = 2154
+  to_port   = 2154
+
+  protocol = "tcp"
+
+  cidr_blocks = ["0.0.0.0/0"]
 
   count = var.validator_count
 }
