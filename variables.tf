@@ -9,6 +9,11 @@ variable "ssh_allowlist" {
   default = []
 }
 
+variable "validator_ami" {
+  type    = string
+  default = ""
+}
+
 variable "validator_autorecover" {
   type    = bool
   default = true
@@ -19,7 +24,7 @@ variable "validator_count" {
 }
 
 variable "validator_instance_type" {
-  default = "m5.large"
+  default = "t3.large"
 }
 
 variable "validator_subnets" {

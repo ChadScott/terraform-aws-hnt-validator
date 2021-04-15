@@ -26,7 +26,7 @@ resource "aws_key_pair" "validator" {
 }
 
 resource "aws_instance" "validator" {
-  ami                         = data.aws_ami.ubuntu.id
+  ami                         = length(var.validator_ami) > 0 ? var.validator_ami : data.aws_ami.ubuntu.id
   associate_public_ip_address = true
   instance_type               = var.validator_instance_type
   key_name                    = aws_key_pair.validator[count.index].key_name
