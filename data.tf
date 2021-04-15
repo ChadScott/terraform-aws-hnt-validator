@@ -14,6 +14,8 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
+data "aws_region" "current" {}
+
 data "aws_subnet" "validator" {
   id = element(var.validator_subnets, count.index)
 

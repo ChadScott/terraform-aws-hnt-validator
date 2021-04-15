@@ -3,12 +3,28 @@ variable "output_keys" {
   default = false
 }
 
+variable "ssh_allowlist" {
+  type = list(string)
+
+  default = []
+}
+
+variable "validator_ami" {
+  type    = string
+  default = ""
+}
+
+variable "validator_autorecover" {
+  type    = bool
+  default = true
+}
+
 variable "validator_count" {
   default = 1
 }
 
 variable "validator_instance_type" {
-  default = "m5.large"
+  default = "t3.large"
 }
 
 variable "validator_subnets" {
