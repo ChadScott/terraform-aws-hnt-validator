@@ -14,13 +14,13 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
+data "aws_region" "current" {}
+
 data "aws_subnet" "validator" {
   id = element(var.validator_subnets, count.index)
 
   count = var.validator_count
 }
-
-data "aws_region" "current" {}
 
 data "template_cloudinit_config" "validator" {
   base64_encode = true
