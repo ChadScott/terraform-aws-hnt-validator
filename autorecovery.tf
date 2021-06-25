@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_metric_alarm" "validator" {
   alarm_description  = "This metric auto recovers EC2 instances"
-  alarm_name         = "hnt-validator-autorecovery-${random_id.validator.hex}-${count.index}"
+  alarm_name         = "hnt-validator-autorecovery-${random_id.validator.hex}"
   evaluation_periods = "2"
   namespace          = "AWS/EC2"
   period             = "60"
@@ -13,12 +13,12 @@ resource "aws_cloudwatch_metric_alarm" "validator" {
   threshold           = "0.0"
 
   dimensions = {
-    InstanceId = aws_instance.validator[count.index].id
+    InstanceId = aws_instance.validator.id
   }
 
   tags = merge({
-    Name = "hnt-validator-${random_id.validator.hex}-${count.index}"
+    Name = "hnt-validator-${random_id.validator.hex}"
   }, var.validator_tags)
 
-  count = var.validator_autorecover ? var.validator_count : 0
+  count = var.validator_autorecover ? 1 : 0
 }
