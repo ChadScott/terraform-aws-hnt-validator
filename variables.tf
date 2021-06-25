@@ -1,5 +1,6 @@
 variable "output_keys" {
-  type    = bool
+  type = bool
+
   default = false
 }
 
@@ -10,33 +11,51 @@ variable "ssh_allowlist" {
 }
 
 variable "validator_ami" {
-  type    = string
+  type = string
+
   default = ""
 }
 
 variable "validator_autorecover" {
-  type    = bool
+  type = bool
+
   default = true
 }
 
-variable "validator_count" {
-  default = 1
+variable "validator_ebs_snapshot" {
+  type = string
+
+  default = ""
 }
 
 variable "validator_instance_type" {
   default = "t3.large"
 }
 
-variable "validator_subnets" {
-  type = list(string)
+variable "validator_monitoring" {
+  type = bool
+
+  default = false
+}
+
+variable "validator_snapshot_retention" {
+  type = number
+
+  default = 7
+}
+
+variable "validator_subnet" {
+  type = string
 }
 
 variable "validator_tags" {
-  type    = map(any)
+  type = map(any)
+
   default = {}
 }
 
 variable "validator_volume_size" {
-  type    = number
-  default = 64
+  type = number
+
+  default = 256
 }

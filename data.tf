@@ -17,9 +17,7 @@ data "aws_ami" "ubuntu" {
 data "aws_region" "current" {}
 
 data "aws_subnet" "validator" {
-  id = element(var.validator_subnets, count.index)
-
-  count = var.validator_count
+  id = var.validator_subnet
 }
 
 data "template_cloudinit_config" "validator" {
@@ -35,4 +33,8 @@ data "template_cloudinit_config" "validator" {
 
 data "template_file" "validator_cloud_config" {
   template = file("${path.module}/templates/cloud-config.tpl")
+  vars = {
+    public_ip = aws_eip.validator.public_ip
+    volume_id = aws_ebs_volume.validator.id
+  }
 }
