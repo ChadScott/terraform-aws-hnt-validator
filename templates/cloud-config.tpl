@@ -108,5 +108,5 @@ write_files:
       chmod 0700 /usr/local/mnt/validator
 runcmd:
   - test -x /usr/local/bin/mount-validator-volume && /usr/local/bin/mount-validator-volume
-  - docker run -d --init --restart always --publish 2154:2154/tcp --name validator -e "NAT_EXTERNAL_IP=${public_ip}" --mount type=bind,source=/usr/local/mnt/validator,target=/var/data quay.io/team-helium/validator:latest-validator-amd64
+  - docker run -d --init --restart always --publish 2154:2154/tcp --publish 8080:8080/tcp --name validator -e "NAT_INTERNAL_IP=$(curl http://169.254.169.254/latest/meta-data/local-ipv4)" -e "NAT_EXTERNAL_IP=${public_ip}" --mount type=bind,source=/usr/local/mnt/validator,target=/var/data quay.io/team-helium/validator:latest-validator-amd64
   - docker run -d --name watchtower -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower validator
