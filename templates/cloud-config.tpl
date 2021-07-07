@@ -74,6 +74,11 @@ packages:
   - containerd.io
   - nvme-cli
   - jq
+ntp:
+  enabled: true
+  ntp_client: chrony
+  servers:
+    - 169.254.169.123
 write_files:
   - path: /usr/local/bin/mount-validator-volume
     owner: root:root
