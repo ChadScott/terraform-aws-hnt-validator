@@ -114,6 +114,18 @@ resource "aws_security_group_rule" "validator_2154_ingress" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "validator_8080_ingress" {
+  security_group_id = aws_security_group.validator.id
+  type              = "ingress"
+
+  from_port = 8080
+  to_port   = 8080
+
+  protocol = "tcp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 resource "local_file" "validator" {
   file_permission   = "0600"
   filename          = "validator-${random_id.validator.hex}.key"
