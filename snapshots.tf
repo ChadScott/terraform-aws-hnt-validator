@@ -55,6 +55,10 @@ resource "aws_iam_role" "validator_dlm_role" {
 }
 EOF
 
+  tags = merge({
+    Name = "hnt-validator-${random_id.validator.hex}-state"
+  }, var.validator_tags)
+
   count = var.validator_snapshot_retention > 0 ? 1 : 0
 }
 

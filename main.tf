@@ -42,7 +42,6 @@ resource "aws_instance" "validator" {
   instance_type               = var.validator_instance_type
   key_name                    = aws_key_pair.validator.key_name
   monitoring                  = var.validator_monitoring
-  placement_group             = aws_placement_group.validator.id
   subnet_id                   = var.validator_subnet
   user_data                   = data.template_cloudinit_config.validator.rendered
   vpc_security_group_ids      = [aws_security_group.validator.id]
@@ -59,11 +58,6 @@ resource "aws_instance" "validator" {
     }, var.validator_tags)
     volume_size           = 8
   }
-}
-
-resource "aws_placement_group" "validator" {
-  name     = "hnt-validator-${random_id.validator.hex}"
-  strategy = "spread"
 }
 
 resource "aws_security_group" "validator" {
