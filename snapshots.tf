@@ -1,3 +1,43 @@
+resource "aws_dlm_lifecycle_policy" "validator" {
+  description        = "Helium Validator ${random_id.validator.hex} automatic snapshot"
+  execution_role_arn = aws_iam_role.validator_dlm_role[0].arn
+  state              = "ENABLED"
+
+  policy_details {
+    resource_types = ["VOLUME"]
+
+    schedule {
+      name = "Keep ${var.validator_snapshot_retention} daily backups"
+
+      create_rule {
+        interval      = 24
+        interval_unit = "HOURS"
+        times         = ["23:45"]
+      }
+
+      retain_rule {
+        count = var.validator_snapshot_retention
+      }
+
+      tags_to_add = {
+        SnapshotCreator = "DLM"
+      }
+
+      copy_tags = true
+    }
+
+    target_tags = {
+      Name = "hnt-validator-${random_id.validator.hex}-state"
+    }
+  }
+
+  tags = merge({
+    Name = "hnt-validator-${random_id.validator.hex}"
+  }, var.validator_tags)
+
+  count = var.validator_snapshot_retention > 0 ? 1 : 0
+}
+
 resource "aws_iam_role" "validator_dlm_role" {
   assume_role_policy = <<EOF
 {
@@ -47,42 +87,6 @@ resource "aws_iam_role_policy" "validator_dlm_lifecycle" {
    ]
 }
 EOF
-
-  count = var.validator_snapshot_retention > 0 ? 1 : 0
-}
-
-resource "aws_dlm_lifecycle_policy" "validator" {
-  description        = "Helium Validator ${random_id.validator.hex} automatic snapshot"
-  execution_role_arn = aws_iam_role.validator_dlm_role[0].arn
-  state              = "ENABLED"
-
-  policy_details {
-    resource_types = ["VOLUME"]
-
-    schedule {
-      name = "Keep ${var.validator_snapshot_retention} daily backups"
-
-      create_rule {
-        interval      = 24
-        interval_unit = "HOURS"
-        times         = ["23:45"]
-      }
-
-      retain_rule {
-        count = var.validator_snapshot_retention
-      }
-
-      tags_to_add = {
-        SnapshotCreator = "DLM"
-      }
-
-      copy_tags = true
-    }
-
-    target_tags = {
-      Name = "hnt-validator-${random_id.validator.hex}"
-    }
-  }
 
   count = var.validator_snapshot_retention > 0 ? 1 : 0
 }

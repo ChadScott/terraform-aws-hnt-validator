@@ -97,6 +97,8 @@ write_files:
       device_path=$(nvme list -o json | jq -r ".Devices[] | select(.SerialNumber==\"$${volume_id}\").DevicePath")
       if [[ ! $(lsblk -nfo uuid $${device_path}) ]]; then
         mkfs -t ext4 -L validator $${device_path}
+      else
+        fsck -p $${device_path}
       fi
 
       if [ ! -d /usr/local/mnt/validator ]; then

@@ -5,7 +5,7 @@ resource "aws_ebs_volume" "validator" {
   snapshot_id       = var.validator_ebs_snapshot
 
   tags = merge({
-    Name = "hnt-validator-${random_id.validator.hex}"
+    Name = "hnt-validator-${random_id.validator.hex}-state"
   }, var.validator_tags)
 }
 
@@ -51,13 +51,12 @@ resource "aws_instance" "validator" {
     Name = "hnt-validator-${random_id.validator.hex}"
   }, var.validator_tags)
 
-  volume_tags = merge({
-    Name = "hnt-validator-${random_id.validator.hex}"
-  }, var.validator_tags)
-
   root_block_device {
     delete_on_termination = true
     encrypted             = true
+    tags                  = merge({
+      Name = "hnt-validator-${random_id.validator.hex}-root",
+    }, var.validator_tags)
     volume_size           = 8
   }
 }
